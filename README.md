@@ -36,10 +36,10 @@ A real-time courier platform, like GrabExpress: customers book a delivery on a m
 
 | Project | What it is | Stack | Links |
 | --- | --- | --- | --- |
-| **CosFit** | AI cosplay try-on with Fashn AI, Gemini full-body photo check, community chat and Midtrans payments | Next.js, MongoDB, Socket.IO, Gemini | [Live](https://example.com), [Repo](https://github.com/farhantaufikrahman) <!-- TODO --> |
-| **Kyriegram** | Instagram-style mobile app with a GraphQL API and Redis-cached feeds | React Native, Expo, GraphQL, Redis | [Live](https://example.com), [Repo](https://github.com/farhantaufikrahman) <!-- TODO --> |
-| **TripSync** | Collaborative travel planner; I built the whole backend, Gemini itinerary suggestions and a chat room per plan | Express, PostgreSQL, Socket.IO, React | [Live](https://example.com), [Repo](https://github.com/farhantaufikrahman) <!-- TODO --> |
-| **Waifu Battle** | Card game with MyAnimeList data, Gemini-assisted tactics and Google sign-in | Express, React, PostgreSQL | [Live](https://example.com), [Repo](https://github.com/farhantaufikrahman) <!-- TODO --> |
+| **CosFit** | AI cosplay try-on with Fashn AI, Gemini full-body photo check, community chat and Midtrans payments | Next.js, MongoDB, Socket.IO, Gemini | [Live](https://cosfitai.vzkyrielight.xyz), [Repo](https://github.com/farhantaufikrahman/CosFit-FinPrjctHacktiv8) <!-- TODO --> |
+| **Kyriegram** | Instagram-style mobile app with a GraphQL API and Redis-cached feeds | React Native, Expo, GraphQL, Redis | [Expo.dev](https://expo.dev/accounts/farhanrahman/projects/client-1/updates/bb99d561-68a9-490a-8cb6-85a1a1843fb5), [Repo](https://github.com/farhantaufikrahman/Kyriegram-Mobile-InstaClone-) <!-- TODO --> |
+| **TripSync** | Collaborative travel planner; I built the whole backend, Gemini itinerary suggestions and a chat room per plan | Express, PostgreSQL, Socket.IO, React | [Live](https://tripsync.vzkyrielight.xyz/), [Repo](https://github.com/farhantaufikrahman/TripSync-Planner) <!-- TODO --> |
+| **Waifu Battle** | Card game with MyAnimeList data, Gemini-assisted tactics and Google sign-in | Express, React, PostgreSQL | [Live](https://portofolio.vzkyrielight.xyz), [Repo](https://github.com/farhantaufikrahman/Waifu-Battle) <!-- TODO --> |
 | **Portofolio** | This pixel night-sky site: Next.js, canvas starfield, interactive architecture diagram | Next.js, React 19, TypeScript | [Live](https://portofolio.vzkyrielight.xyz), [Repo](https://github.com/farhantaufikrahman/portofolio) |
 
 ## Stack
