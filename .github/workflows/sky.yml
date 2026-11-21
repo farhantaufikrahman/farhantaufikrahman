@@ -1,0 +1,48 @@
+# Builds the live images of the profile README and publishes them to the `output` branch:
+#   - night-snake.svg : Platane/snk contribution snake, re-skinned as a comet (scripts/skin_snake.py)
+#   - telemetry.svg   : stats card drawn from the GitHub GraphQL API (scripts/telemetry.py)
+# The README reads both from raw.githubusercontent.com, so no third-party server runs at view time.
+name: Night sky (snake + telemetry)
+
+on:
+  schedule:
+    - cron: "17 0,12 * * *" # 07:17 and 19:17 WIB
+  workflow_dispatch:
+  push:
+    branches: [main]
+
+permissions:
+  contents: write
+
+concurrency:
+  group: sky
+  cancel-in-progress: true
+
+jobs:
+  sky:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: Platane/snk/svg-only@v3
+        with:
+          github_user_name: ${{ github.repository_owner }}
+          outputs: dist/snake-raw.svg
+
+      - name: Re-skin the snake and draw telemetry
+        env:
+          # Optional: a fine-grained PAT saved as TELEMETRY_TOKEN also counts private contributions.
+          GITHUB_TOKEN: ${{ secrets.TELEMETRY_TOKEN || secrets.GITHUB_TOKEN }}
+        run: |
+          python3 scripts/skin_snake.py dist/snake-raw.svg dist/night-snake.svg
+          python3 scripts/telemetry.py "${{ github.repository_owner }}" dist/telemetry.svg
+          rm dist/snake-raw.svg
+
+      - uses: crazy-max/ghaction-github-pages@v4
+        with:
+          target_branch: output
+          build_dir: dist
+          commit_message: "chore: refresh night sky"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
