@@ -40,8 +40,8 @@ def write(name: str, svg: str) -> None:
 PHRASES = [
     "go build ./...  # microservices over gRPC",
     "mvn spring-boot:run  # Java 25 + Kafka",
-    "kubectl rollout status  # shipped and live",
-    "watching it all in Prometheus and Grafana",
+    "kubectl rollout status  # orchestrated on k8s",
+    "git push  # CI/CD: test > scan > build > deploy",
 ]
 
 
@@ -156,7 +156,7 @@ def banner() -> None:
 {orbit_fx}
 <g class="float" style="animation-duration:9s;animation-delay:-3s">{sprite("moon", 1088, 30, 3.5)}</g>
 
-<g class="rise"><text x="62" y="112" font-size="30" fill="{ROUTE_TEXT}">// SOFTWARE ENGINEER - JAVA + GO</text></g>
+<g class="rise"><text x="62" y="112" font-size="30" fill="{ROUTE_TEXT}">// SOFTWARE ENGINEER - JAVA - GO - MICROSERVICES - CI/CD - K8S</text></g>
 <g class="rise d1">
 <text x="60" y="198" font-size="{name_size}" fill="{ROUTE}" opacity=".55" filter="url(#ng)">{esc(name)}</text>
 <text x="60" y="198" font-size="{name_size}" fill="{INK}">{esc(name)}</text></g>
@@ -347,10 +347,11 @@ SKILLS = [
     ("Languages", ["Java", "Go", "TypeScript", "JavaScript", "Python", "Bash"]),
     ("Frameworks", ["Spring Boot", "Gin", "gRPC", "Node.js", "Express", "GraphQL", "Socket.IO", "WebSocket"]),
     ("Frontend", ["React", "Next.js", "React Native", "Expo", "TanStack", "Redux", "Tailwind", "Vite"]),
-    ("Data", ["Oracle", "PostgreSQL", "MongoDB", "Redis", "Kafka", "NATS", "Flyway", "Sequelize"]),
-    ("Quality", ["JUnit", "Jest", "Vitest", "Testing Lib", "MSW", "SonarQube", "Postman"]),
-    ("Platform", ["Docker", "Kubernetes", "Helm", "Jenkins", "Actions", "Prometheus", "Grafana",
-                  "AWS", "Cloudflare", "NGINX", "Linux"]),
+    ("Data + Events", ["Oracle", "PostgreSQL", "MongoDB", "Redis", "Kafka", "NATS", "Sequelize"]),
+    ("Quality", ["JUnit", "Jest", "Vitest", "Testing Lib", "MSW", "Postman"]),
+    ("CI/CD", ["Jenkins", "Actions", "Docker", "SonarQube", "Flyway"]),
+    ("Orchestration", ["Kubernetes", "Helm", "Kustomize", "Gateway API", "NGINX", "Linux"]),
+    ("Cloud + Ops", ["AWS", "Cloudflare", "Prometheus", "Grafana"]),
 ]
 
 LOGO_FILE = {
@@ -368,7 +369,7 @@ LOGO_FILE = {
     "Grafana": "grafana", "AWS": "aws-dark", "Cloudflare": "cloudflare", "NGINX": "nginx",
     "Linux": "linux-pixel", "Vercel": "vercel-dark",
 }
-GROUP_ACCENT = [AMBER, ROUTE_TEXT, MINT, PINK, LILAC, SKYBLUE]
+GROUP_ACCENT = [AMBER, ROUTE_TEXT, MINT, PINK, LILAC, SKYBLUE, SIGNAL, STAR_GOLD]
 
 
 def logo(name: str, x: float, y: float, s: float) -> str:
@@ -382,7 +383,7 @@ def logo(name: str, x: float, y: float, s: float) -> str:
 def stack() -> None:
     W = 1200
     cw, ch, gap = 84, 88, 6
-    x0 = 176
+    x0 = 210
     per_row = (W - x0 - 32) // (cw + gap)
     y = 92
     rows_out, n = [], 0
@@ -417,7 +418,7 @@ def stack() -> None:
 <radialGradient id="nb" cx=".95" cy="0" r=".6"><stop offset="0" stop-color="{VIOLET}" stop-opacity=".2"/><stop offset="1" stop-color="{VIOLET}" stop-opacity="0"/></radialGradient></defs>
 <g clip-path="url(#frame)">
 <rect width="{W}" height="{H}" fill="{DEEP}"/><rect width="{W}" height="{H}" fill="url(#nb)"/>
-{starfield(77, W, H, 60, sparkle_every=10, opacity=.55, avoid=lambda x, y: x > 170 and y > 80)}
+{starfield(77, W, H, 60, sparkle_every=10, opacity=.55, avoid=lambda x, y: x > 200 and y > 80)}
 <rect class="scan" x="0" y="-120" width="{W}" height="120" fill="url(#scan)"/>
 <text x="40" y="58" font-size="36" fill="{INK}">Tools I've shipped with</text>
 <text x="{W - 40}" y="58" font-size="22" fill="{MUTED}" text-anchor="end">every one used in a deployed project</text>
@@ -428,8 +429,8 @@ def stack() -> None:
     css = (f".scan{{animation:scan 9s linear infinite}}"
            f"@keyframes scan{{to{{transform:translateY({H + 120}px)}}}}")
     names = ", ".join(i for _, items in SKILLS for i in items)
-    write("stack.svg", svg_doc(W, H, f"Tech stack: {names}", "Grouped by languages, frameworks, "
-                               "frontend, data, quality and platform.", css, body))
+    write("stack.svg", svg_doc(W, H, f"Tech stack: {names}", "Grouped by languages, frameworks, frontend, "
+                               "data and messaging, quality, CI/CD, orchestration, cloud and ops.", css, body))
 
 
 # ───────────────────────────── journey ─────────────────────────────

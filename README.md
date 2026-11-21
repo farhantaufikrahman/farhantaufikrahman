@@ -16,25 +16,31 @@
   <img src="https://img.shields.io/badge/available_in-Jabodetabek-8ea6ff?style=flat-square&labelColor=070b22" alt="Available for work in Jabodetabek" />
   <img src="https://img.shields.io/badge/Java-Spring_Boot-ffb524?style=flat-square&logo=openjdk&logoColor=white&labelColor=070b22" alt="Java and Spring Boot" />
   <img src="https://img.shields.io/badge/Go-gRPC-4fe3c1?style=flat-square&logo=go&logoColor=white&labelColor=070b22" alt="Go and gRPC" />
+  <img src="https://img.shields.io/badge/Microservices-Kafka_%C2%B7_NATS-ff7ab8?style=flat-square&logo=apachekafka&logoColor=white&labelColor=070b22" alt="Microservices with Kafka and NATS" />
+  <img src="https://img.shields.io/badge/CI%2FCD-Jenkins_%C2%B7_GitHub_Actions-5ec8ff?style=flat-square&logo=githubactions&logoColor=white&labelColor=070b22" alt="CI/CD with Jenkins and GitHub Actions" />
+  <img src="https://img.shields.io/badge/Orchestration-Kubernetes_%C2%B7_Helm-b892ff?style=flat-square&logo=kubernetes&logoColor=white&labelColor=070b22" alt="Orchestration with Kubernetes and Helm" />
   <img src="https://img.shields.io/badge/AWS-Certified_Cloud_Practitioner-ff9900?style=flat-square&logo=amazonwebservices&logoColor=white&labelColor=070b22" alt="AWS Certified Cloud Practitioner" />
 </p>
 
 ## 🛰️ Ground control
 
-Software engineer working mainly in **Java** and **Go**. I design, ship, deploy **and monitor** my own systems: Spring Boot services with Kafka, Go microservices over gRPC, React frontends, all running on Kubernetes with CI/CD and Prometheus + Grafana watching them.
+Software engineer working mainly in **Java** and **Go**, with a focus on **microservices**, **CI/CD** and **container orchestration**. I design, ship, deploy **and monitor** my own systems: Go microservices over gRPC and NATS, Spring Boot services with Kafka, orchestrated on Kubernetes with Helm and Kustomize, released through Jenkins and GitHub Actions pipelines, and watched by Prometheus + Grafana.
 
 Before software, I spent four years in telecom: an Electrical Engineering degree, then network monitoring and incident handling for **SATRIA-1**, Indonesia's national satellite. That is where the "keep them running" habit comes from.
 
 ```yaml
-callsign:   farhan
-role:       software engineer
-core:       [Java, Go]                # Spring Boot, Gin, gRPC
-also:       [TypeScript, JavaScript, Python, Bash]
-builds:     [microservices, real-time apps, streaming pipelines, mobile apps]
-operates:   [Kubernetes, Helm, Jenkins, GitHub Actions, Prometheus, Grafana]
-prev_orbit: SATRIA-1 Network Monitoring Center   # Dec 2024 - Mar 2026
-now:        AWS re/Start, shipping side projects full-time
-available:  software engineer roles in Jabodetabek
+callsign:      farhan
+role:          software engineer
+core:          [Java, Go]                  # Spring Boot, Gin, gRPC
+also:          [TypeScript, JavaScript, Python, Bash]
+focus:         [microservices, CI/CD, orchestration]
+microservices: [gRPC, Kafka, NATS JetStream, transactional outbox]
+ci_cd:         [Jenkins with auto-rollback, GitHub Actions, SonarQube]
+orchestration: [Kubernetes, Helm, Kustomize, Gateway API]
+observability: [Prometheus, Grafana]
+prev_orbit:    SATRIA-1 Network Monitoring Center   # Dec 2024 - Mar 2026
+now:           AWS re/Start, shipping side projects full-time
+available:     software engineer roles in Jabodetabek
 ```
 
 ## 🌌 Missions
@@ -158,7 +164,7 @@ flowchart LR
 
 ## 🧰 Stack
 
-<img src="assets/stack.svg" width="100%" alt="Tech stack. Languages: Java, Go, TypeScript, JavaScript, Python, Bash. Frameworks: Spring Boot, Gin, gRPC, Node.js, Express, GraphQL, Socket.IO, WebSocket. Frontend: React, Next.js, React Native, Expo, TanStack, Redux, Tailwind, Vite. Data: Oracle, PostgreSQL, MongoDB, Redis, Kafka, NATS, Flyway, Sequelize. Quality: JUnit, Jest, Vitest, Testing Library, MSW, SonarQube, Postman. Platform: Docker, Kubernetes, Helm, Jenkins, GitHub Actions, Prometheus, Grafana, AWS, Cloudflare, NGINX, Linux." />
+<img src="assets/stack.svg" width="100%" alt="Tech stack. Languages: Java, Go, TypeScript, JavaScript, Python, Bash. Frameworks: Spring Boot, Gin, gRPC, Node.js, Express, GraphQL, Socket.IO, WebSocket. Frontend: React, Next.js, React Native, Expo, TanStack, Redux, Tailwind, Vite. Data and events: Oracle, PostgreSQL, MongoDB, Redis, Kafka, NATS, Sequelize. Quality: JUnit, Jest, Vitest, Testing Library, MSW, Postman. CI/CD: Jenkins, GitHub Actions, Docker, SonarQube, Flyway. Orchestration: Kubernetes, Helm, Kustomize, Gateway API, NGINX, Linux. Cloud and ops: AWS, Cloudflare, Prometheus, Grafana." />
 
 ## 📡 Telemetry
 
