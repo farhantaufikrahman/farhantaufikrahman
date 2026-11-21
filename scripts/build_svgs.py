@@ -545,6 +545,222 @@ def footer() -> None:
                                 "Pixel horizon at night with a small satellite dish.", css, body))
 
 
+# ───────────────────────────── pipeline ("how I ship") ─────────────────────────────
+
+PIPE_T = 14.0  # seconds for one change to travel from code to observability
+
+STAGES = [
+    ("Code", AMBER, ["java", "go", "typescript"], "Java, Go, TypeScript", "code"),
+    ("Commit", ROUTE_TEXT, ["github-dark"], "Git, pull request to dev or main", "git"),
+    ("CI/CD", MINT, ["jenkins", "githubactions", "sonarqube"], "build, test, scan, deploy", "ci"),
+    ("Package", SKYBLUE, ["docker"], "images tagged by SHA on Docker Hub", "pkg"),
+    ("Orchestrate", LILAC, ["kubernetes", "helm-dark"], "microservices on k8s, Helm, Kustomize", "k8s"),
+    ("Expose", PINK, ["nginx", "cloudflare", "aws-dark"], "Gateway API, Cloudflare, AWS", "edge"),
+    ("Observe", SIGNAL, ["prometheus", "grafana"], "metrics, dashboards, alerts", "obs"),
+]
+
+
+def _logo_file(name, x, y, s):
+    data = base64.b64encode((LOGOS / f"{name}.svg").read_bytes()).decode()
+    return f'<image href="data:image/svg+xml;base64,{data}" x="{x}" y="{y}" width="{s}" height="{s}"/>'
+
+
+def _mini(kind, ax, ay, aw, ah, acc, d):
+    """Small animation inside a stage card. `d` is the stage's start time (s)."""
+    st = lambda extra=0.0: f'style="animation-delay:{d + extra:.2f}s"'
+    out = []
+    if kind == "code":
+        out.append(f'<path d="{pixel_chip(ax, ay, aw, ah, 4)}" fill="{SKY}"/>')
+        widths = [64, 92, 48, 80, 36]
+        cols = [AMBER, ROUTE_TEXT, MINT, INK_SOFT, AMBER]
+        for k, (w, c) in enumerate(zip(widths, cols)):
+            ind = 8 + (12 if k in (1, 2, 3) else 0) + (12 if k == 2 else 0)
+            out.append(f'<rect class="grow" {st(k * .22)} x="{ax + ind}" y="{ay + 10 + k * 13}" '
+                       f'width="{min(w, aw - ind - 8)}" height="6" fill="{c}"/>')
+        out.append(f'<rect class="blink" x="{ax + 50}" y="{ay + 62}" width="6" height="8" fill="{AMBER}"/>')
+    elif kind == "git":
+        y0, y1 = ay + 52, ay + 24
+        out.append(f'<path d="M{ax + 6} {y0}H{ax + aw - 6}" stroke="{LINE_STRONG}" stroke-width="4"/>')
+        out.append(f'<path d="M{ax + 34} {y0}V{y1}H{ax + 86}V{y0}" fill="none" stroke="{acc}" stroke-width="4" '
+                   f'class="pop" {st(.3)}/>')
+        for k, (x, y, c) in enumerate([(ax + 10, y0, LINE_STRONG), (ax + 34, y0, ROUTE_TEXT), (ax + 60, y1, acc),
+                                       (ax + 86, y0, AMBER), (ax + 110, y0, AMBER)]):
+            out.append(f'<rect class="pop" {st(.2 + k * .25)} x="{x - 7}" y="{y - 7}" width="14" height="14" '
+                       f'fill="{c}" stroke="{SKY}" stroke-width="2"/>')
+        out.append(f'<text class="pop" {st(1.4)} x="{ax + aw / 2}" y="{ay + ah - 2}" font-size="16" '
+                   f'fill="{MUTED}" text-anchor="middle">merge to main</text>')
+    elif kind == "ci":
+        for k, lab in enumerate(["build", "test", "scan"]):
+            y = ay + 8 + k * 25
+            out.append(f'<text x="{ax + 6}" y="{y + 15}" font-size="18" fill="{INK_SOFT}">{lab}</text>')
+            out.append(f'<path d="{pixel_chip(ax + aw - 30, y, 22, 20, 3)}" fill="{PANEL}" stroke="{LINE_STRONG}" stroke-width="2"/>')
+            out.append(f'<g class="pop" {st(.35 + k * .45)}>'
+                       f'<path d="{pixel_chip(ax + aw - 30, y, 22, 20, 3)}" fill="{acc}"/>'
+                       f'<path d="M{ax + aw - 24} {y + 10}h3v3h3v-3h3v-3h3" fill="none" stroke="{SKY}" stroke-width="3"/></g>')
+            out.append(f'<rect x="{ax + 52}" y="{y + 8}" width="{aw - 92}" height="4" fill="{LINE}"/>'
+                       f'<rect class="grow" {st(k * .45)} x="{ax + 52}" y="{y + 8}" width="{aw - 92}" height="4" fill="{acc}"/>')
+    elif kind == "pkg":
+        for k in range(3):
+            x = ax + 10 + k * 36
+            for j in range(2 if k != 1 else 3):
+                y = ay + ah - 22 - j * 20
+                out.append(f'<g class="drop" {st(.15 * (k * 3 + j))}>'
+                           f'<rect x="{x}" y="{y}" width="32" height="18" fill="{acc if (k + j) % 2 else ROUTE}"/>'
+                           f'<rect x="{x + 6}" y="{y + 4}" width="3" height="10" fill="{SKY}" opacity=".45"/>'
+                           f'<rect x="{x + 14}" y="{y + 4}" width="3" height="10" fill="{SKY}" opacity=".45"/>'
+                           f'<rect x="{x + 22}" y="{y + 4}" width="3" height="10" fill="{SKY}" opacity=".45"/></g>')
+        out.append(f'<text class="pop" {st(1.4)} x="{ax + aw / 2}" y="{ay + 4}" font-size="16" fill="{AMBER_TEXT}" '
+                   f'text-anchor="middle">:sha-3f9a1c</text>')
+    elif kind == "k8s":
+        pods = [(ax + 4 + c * 40, ay + 8 + r * 34) for r in range(2) for c in range(3)]
+        names = ["api", "auth", "video", "api", "kafka", "nats"]
+        for k, ((x, y), n) in enumerate(zip(pods, names)):
+            out.append(f'<g class="pop" {st(.12 * k)}><path d="{pixel_chip(x, y, 36, 26, 4)}" fill="{PANEL}" '
+                       f'stroke="{acc}" stroke-width="2"/>'
+                       f'<text x="{x + 18}" y="{y + 18}" font-size="14" fill="{INK_SOFT}" text-anchor="middle">{n}</text></g>')
+        for k, (a, b) in enumerate([(0, 1), (1, 2), (3, 4), (4, 5), (0, 3), (2, 5)]):
+            (x1, y1), (x2, y2) = pods[a], pods[b]
+            path = f"M{x1 + 18} {y1 + 13}L{x2 + 18} {y2 + 13}"
+            out.append(f'<path d="{path}" stroke="{acc}" stroke-opacity=".35" stroke-width="2"/>')
+            out.append(f'<rect x="-2" y="-2" width="5" height="5" fill="{AMBER}">'
+                       f'<animateMotion dur="{1.2 + k * .2:.1f}s" repeatCount="indefinite" path="{path}"/></rect>')
+    elif kind == "edge":
+        cx, cy = ax + aw / 2, ay + ah / 2 - 2
+        for k in range(3):
+            out.append(f'<rect x="{cx}" y="{cy}" width="0" height="0" fill="none" stroke="{acc}" stroke-width="2" opacity="0">'
+                       f'<animate attributeName="x" from="{cx}" to="{cx - 54}" dur="2.4s" begin="{k * .8}s" repeatCount="indefinite"/>'
+                       f'<animate attributeName="y" from="{cy}" to="{cy - 36}" dur="2.4s" begin="{k * .8}s" repeatCount="indefinite"/>'
+                       f'<animate attributeName="width" from="0" to="108" dur="2.4s" begin="{k * .8}s" repeatCount="indefinite"/>'
+                       f'<animate attributeName="height" from="0" to="72" dur="2.4s" begin="{k * .8}s" repeatCount="indefinite"/>'
+                       f'<animate attributeName="opacity" values=".8;0" dur="2.4s" begin="{k * .8}s" repeatCount="indefinite"/></rect>')
+        # pixel padlock = TLS through the tunnel
+        out.append(f'<g shape-rendering="crispEdges"><path d="M{cx - 8} {cy - 4}v-8h4v-4h8v4h4v8" fill="none" '
+                   f'stroke="{INK}" stroke-width="3"/><rect x="{cx - 13}" y="{cy - 4}" width="26" height="20" fill="{AMBER}"/>'
+                   f'<rect x="{cx - 2}" y="{cy + 2}" width="4" height="8" fill="{SKY}"/></g>')
+    elif kind == "obs":
+        out.append(f'<path d="{pixel_chip(ax, ay, aw, ah, 4)}" fill="{SKY}"/>')
+        for k in range(1, 4):
+            out.append(f'<rect x="{ax + 6}" y="{ay + k * 18}" width="{aw - 12}" height="1" fill="{LINE}"/>')
+        pts = [(0, 56), (14, 48), (28, 52), (42, 34), (56, 40), (70, 22), (84, 30), (98, 14), (112, 20)]
+        dpath = "M" + " L".join(f"{ax + 6 + x} {ay + y}" for x, y in pts)
+        out.append(f'<path class="draw2" {st(.2)} d="{dpath}" fill="none" stroke="{acc}" stroke-width="3" '
+                   f'stroke-dasharray="200" stroke-dashoffset="200"/>')
+        for k in range(8):
+            h = [10, 16, 12, 22, 14, 26, 18, 30][k]
+            out.append(f'<rect class="grow-y" {st(.1 * k)} x="{ax + 8 + k * 14}" y="{ay + ah - 4 - h}" width="8" '
+                       f'height="{h}" fill="{ROUTE}" opacity=".55"/>')
+        out.append(f'<rect class="blink" x="{ax + 100}" y="{ay + 8}" width="8" height="8" fill="#ff5f56"/>')
+    return "".join(out)
+
+
+def pipeline() -> None:
+    W, H = 1200, 470
+    m, gap = 24, 16
+    cw = (W - 2 * m - 6 * gap) / 7
+    top, ch = 96, 236
+    rail_y = top + ch + 30
+    cxs = [m + i * (cw + gap) + cw / 2 for i in range(7)]
+    T = PIPE_T
+    arrive = [0.03 + i * 0.12 for i in range(7)]  # fraction of T when the change reaches stage i
+    cards, css = [], []
+
+    css.append(
+        f".grow{{animation:grow {T}s steps(6) infinite both;transform-box:fill-box;transform-origin:left}}"
+        f"@keyframes grow{{0%{{transform:scaleX(0)}}4%,62%{{transform:scaleX(1)}}66%,100%{{transform:scaleX(0)}}}}"
+        f".grow-y{{animation:growy {T}s steps(5) infinite both;transform-box:fill-box;transform-origin:bottom}}"
+        f"@keyframes growy{{0%{{transform:scaleY(0)}}4%,62%{{transform:scaleY(1)}}66%,100%{{transform:scaleY(0)}}}}"
+        f".pop{{animation:popx {T}s infinite both}}"
+        f"@keyframes popx{{0%{{opacity:0}}1.5%,62%{{opacity:1}}66%,100%{{opacity:0}}}}"
+        f".drop{{animation:drop {T}s cubic-bezier(.34,1.4,.64,1) infinite both}}"
+        f"@keyframes drop{{0%{{transform:translateY(-34px);opacity:0}}3%,62%{{transform:none;opacity:1}}66%,100%{{opacity:0}}}}"
+        f".draw2{{animation:draw2 {T}s steps(18) infinite both}}"
+        f"@keyframes draw2{{0%{{stroke-dashoffset:200}}8%,62%{{stroke-dashoffset:0}}66%,100%{{stroke-dashoffset:200}}}}"
+        f".hl{{animation:hl {T}s infinite both}}"
+        f"@keyframes hl{{0%{{opacity:0}}2%,10%{{opacity:1}}20%,100%{{opacity:0}}}}"
+        f".flow{{animation:flow 1.2s linear infinite}}@keyframes flow{{to{{stroke-dashoffset:-24}}}}"
+        "@media (prefers-reduced-motion:reduce){.grow,.grow-y,.pop,.drop{transform:none;opacity:1}.draw2{stroke-dashoffset:0}}"
+    )
+
+    for i, (title, acc, logos, caption, kind) in enumerate(STAGES):
+        x = m + i * (cw + gap)
+        d = arrive[i] * T
+        ts = 26 if text_width(title, 26) < cw - 24 else 23
+        logo_row = "".join(_logo_file(n, x + 12 + k * 34, top + 62, 28) for k, n in enumerate(logos))
+        cap = "".join(f'<text x="{x + 12}" y="{top + ch - 34 + k * 19}" font-size="17" fill="{MUTED}">{esc(t)}</text>'
+                      for k, t in enumerate(wrap(caption, 17, cw - 22)[:2]))
+        cards.append(
+            f'<g class="rise" style="animation-delay:{i * .07:.2f}s">'
+            f'<path d="{pixel_chip(x, top, cw, ch, 6)}" fill="{PANEL}" stroke="{LINE}" stroke-width="2"/>'
+            f'<path class="hl" style="animation-delay:{d:.2f}s" d="{pixel_chip(x, top, cw, ch, 6)}" fill="{acc}" '
+            f'fill-opacity=".07" stroke="{acc}" stroke-width="3"/>'
+            f'<rect x="{x + 6}" y="{top}" width="{cw - 12}" height="3" fill="{acc}"/>'
+            f'<text x="{x + 12}" y="{top + 26}" font-size="19" fill="{acc}">0{i + 1}</text>'
+            f'<text x="{x + 12}" y="{top + 52}" font-size="{ts}" fill="{INK}">{title}</text>'
+            f'{logo_row}{_mini(kind, x + 12, top + 104, cw - 24, 80, acc, d)}{cap}'
+            f'<rect x="{x + cw / 2 - 3}" y="{top + ch}" width="6" height="{rail_y - top - ch - 6}" fill="{LINE_STRONG}"/>'
+            f'<rect class="hl" style="animation-delay:{d:.2f}s" x="{x + cw / 2 - 3}" y="{top + ch}" width="6" '
+            f'height="{rail_y - top - ch - 6}" fill="{acc}"/></g>'
+        )
+
+    # rail + travelling change (pauses under every stage)
+    x0, x1 = cxs[0], cxs[-1]
+    span = x1 - x0
+    kp, kt = [], []
+    for i, a in enumerate(arrive):
+        p = (cxs[i] - x0) / span
+        kp += [p, p]
+        kt += [a, min(a + .06, .99)]
+    kp = [0.0] + kp + [1.0]
+    kt = [0.0] + kt + [1.0]
+    rail = (
+        f'<path d="M{x0} {rail_y}H{x1}" stroke="{LINE_STRONG}" stroke-width="4" stroke-dasharray="8 4" class="flow"/>'
+        f'<g><g shape-rendering="crispEdges" style="filter:drop-shadow(0 0 4px {AMBER})">'
+        + "".join(f'<rect x="{-6 - k * 6}" y="{-3 + (k % 2)}" width="5" height="5" fill="{AMBER}" opacity="{1 - k / 7:.2f}"/>' for k in range(1, 7))
+        + f'<rect x="-6" y="-6" width="12" height="12" fill="#fff3c4"/></g>'
+        f'<animateMotion dur="{T}s" repeatCount="indefinite" path="M{x0} {rail_y}H{x1}" calcMode="linear" '
+        f'keyPoints="{";".join(f"{v:.4f}" for v in kp)}" keyTimes="{";".join(f"{v:.4f}" for v in kt)}"/>'
+        f'<animate attributeName="opacity" dur="{T}s" repeatCount="indefinite" values="0;1;1;0;0" '
+        f'keyTimes="0;.03;.82;.86;1"/></g>'
+    )
+    # feedback loops under the rail
+    rb = f"M{cxs[4]} {rail_y + 10}V{rail_y + 34}H{cxs[2]}V{rail_y + 14}"
+    fb = f"M{cxs[6]} {rail_y + 10}V{rail_y + 66}H{cxs[0]}V{rail_y + 14}"
+    loops = (
+        f'<path d="{rb}" fill="none" stroke="#ff6b6b" stroke-width="3" stroke-dasharray="6 6" class="flow"/>'
+        f'<path d="M{cxs[2] - 6} {rail_y + 20}l6 -8l6 8" fill="none" stroke="#ff6b6b" stroke-width="3"/>'
+        f'<text x="{(cxs[2] + cxs[4]) / 2}" y="{rail_y + 54}" font-size="18" fill="#ff8a8a" text-anchor="middle">'
+        f'smoke test fails: automatic rollback</text>'
+        f'<path d="{fb}" fill="none" stroke="{ROUTE}" stroke-width="3" stroke-dasharray="6 6" class="flow"/>'
+        f'<path d="M{cxs[0] - 6} {rail_y + 20}l6 -8l6 8" fill="none" stroke="{ROUTE}" stroke-width="3"/>'
+        f'<text x="{(cxs[0] + cxs[6]) / 2}" y="{rail_y + 86}" font-size="18" fill="{ROUTE_TEXT}" text-anchor="middle">'
+        f'alerts and dashboards feed the next change</text>'
+    )
+    H = rail_y + 104
+    body = f"""
+<defs><clipPath id="frame"><path d="{pixel_frame(W, H)}"/></clipPath>
+<radialGradient id="nb" cx=".9" cy="0" r=".7"><stop offset="0" stop-color="{VIOLET}" stop-opacity=".25"/><stop offset="1" stop-color="{VIOLET}" stop-opacity="0"/></radialGradient>
+<radialGradient id="nb2" cx="0" cy="1" r=".6"><stop offset="0" stop-color="#2878ff" stop-opacity=".16"/><stop offset="1" stop-color="#2878ff" stop-opacity="0"/></radialGradient></defs>
+<g clip-path="url(#frame)">
+<rect width="{W}" height="{H}" fill="{DEEP}"/><rect width="{W}" height="{H}" fill="url(#nb)"/><rect width="{W}" height="{H}" fill="url(#nb2)"/>
+{starfield(88, W, H, 70, sparkle_every=10, opacity=.55, avoid=lambda x, y: top - 6 < y < top + ch + 6)}
+{pixel_star(46, 44, 3, AMBER)}
+<text x="66" y="54" font-size="36" fill="{INK}">How I ship</text>
+<text x="{66 + text_width('How I ship', 36) + 16}" y="54" font-size="22" fill="{MUTED}">one change, from my editor to production, on every project</text>
+{''.join(cards)}
+{rail}
+{loops}
+</g>
+<path d="{pixel_frame(W, H)}" fill="none" stroke="{LINE}" stroke-width="2"/>
+"""
+    write("pipeline.svg", svg_doc(
+        W, H, "How I ship: code, commit, CI/CD, package, orchestrate, expose, observe",
+        "Java and Go code is committed to GitHub, built, tested and scanned by Jenkins and GitHub Actions "
+        "with SonarQube, packaged as Docker images tagged by SHA, deployed as microservices on Kubernetes "
+        "with Helm and Kustomize, exposed through the Gateway API, Cloudflare Tunnel and AWS, and observed "
+        "with Prometheus and Grafana. A failed smoke test rolls back automatically.",
+        "".join(css), body))
+
+
 if __name__ == "__main__":
     OUT.mkdir(exist_ok=True)
     banner()
@@ -552,4 +768,5 @@ if __name__ == "__main__":
         card(i, p)
     stack()
     journey()
+    pipeline()
     footer()
