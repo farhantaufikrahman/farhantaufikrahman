@@ -28,20 +28,7 @@ Software engineer working mainly in **Java** and **Go**, with a focus on **micro
 
 Before software, I spent four years in telecom: an Electrical Engineering degree, then network monitoring and incident handling for **SATRIA-1**, Indonesia's national satellite. That is where the "keep them running" habit comes from.
 
-```yaml
-callsign:      farhan
-role:          software engineer
-core:          [Java, Go]                  # Spring Boot, Gin, gRPC
-also:          [TypeScript, JavaScript, Python, Bash]
-focus:         [microservices, CI/CD, orchestration]
-microservices: [gRPC, Kafka, NATS JetStream, transactional outbox]
-ci_cd:         [Jenkins with auto-rollback, GitHub Actions, SonarQube]
-orchestration: [Kubernetes, Helm, Kustomize, Gateway API]
-observability: [Prometheus, Grafana]
-prev_orbit:    SATRIA-1 Network Monitoring Center   # Dec 2024 - Mar 2026
-now:           AWS re/Start, shipping side projects full-time
-available:     software engineer roles in Jabodetabek
-```
+<img src="assets/pipeline.svg" width="100%" alt="How I ship, animated: 01 Code in Java, Go and TypeScript; 02 Commit to GitHub with a pull request; 03 CI/CD with Jenkins, GitHub Actions and SonarQube (build, test, scan); 04 Package as Docker images tagged by SHA; 05 Orchestrate microservices on Kubernetes with Helm and Kustomize; 06 Expose through the Gateway API, Cloudflare and AWS; 07 Observe with Prometheus and Grafana. A failed smoke test rolls back automatically, and alerts feed the next change." />
 
 ## 🌌 Missions
 
